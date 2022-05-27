@@ -1,0 +1,36 @@
+diff -ru lua-5.3.6.ori/Makefile lua-5.3.6/Makefile
+--- lua-5.3.6.ori/Makefile	2020-07-13 20:38:27.000000000 +0200
++++ lua-5.3.6/Makefile	2022-05-27 19:49:09.385708152 +0200
+@@ -10,13 +10,13 @@
+ # so take care if INSTALL_TOP is not an absolute path. See the local target.
+ # You may want to make INSTALL_LMOD and INSTALL_CMOD consistent with
+ # LUA_ROOT, LUA_LDIR, and LUA_CDIR in luaconf.h.
+-INSTALL_TOP= /usr/local
++INSTALL_TOP= /opt/lua-5.3
+ INSTALL_BIN= $(INSTALL_TOP)/bin
+ INSTALL_INC= $(INSTALL_TOP)/include
+ INSTALL_LIB= $(INSTALL_TOP)/lib
+ INSTALL_MAN= $(INSTALL_TOP)/man/man1
+-INSTALL_LMOD= $(INSTALL_TOP)/share/lua/$V
+-INSTALL_CMOD= $(INSTALL_TOP)/lib/lua/$V
++INSTALL_LMOD= $(INSTALL_TOP)/share/lua
++INSTALL_CMOD= $(INSTALL_TOP)/lib/lua
+ 
+ # How to install. If your install program does not support "-p", then
+ # you may have to run ranlib on the installed liblua.a.
+diff -ru lua-5.3.6.ori/src/luaconf.h lua-5.3.6/src/luaconf.h
+--- lua-5.3.6.ori/src/luaconf.h	2020-09-14 17:34:01.000000000 +0200
++++ lua-5.3.6/src/luaconf.h	2022-05-27 19:48:16.316385947 +0200
+@@ -200,9 +200,9 @@
+ 
+ #else			/* }{ */
+ 
+-#define LUA_ROOT	"/usr/local/"
+-#define LUA_LDIR	LUA_ROOT "share/lua/" LUA_VDIR "/"
+-#define LUA_CDIR	LUA_ROOT "lib/lua/" LUA_VDIR "/"
++#define LUA_ROOT	"/opt/lua-5.3/"
++#define LUA_LDIR	LUA_ROOT "share/lua/"
++#define LUA_CDIR	LUA_ROOT "lib/lua/"
+ #define LUA_PATH_DEFAULT  \
+ 		LUA_LDIR"?.lua;"  LUA_LDIR"?/init.lua;" \
+ 		LUA_CDIR"?.lua;"  LUA_CDIR"?/init.lua;" \
