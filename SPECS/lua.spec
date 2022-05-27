@@ -41,6 +41,7 @@ Source1200: https://github.com/keplerproject/luafilesystem/archive/refs/tags/v%{
 Source1300: https://github.com/lunarmodules/luasocket/archive/refs/tags/v%{lua_socket_version}.tar.gz#/%{lua_socket_xprefix}.tar.gz
 
 Patch0: lua-5.3.6-lua-path.patch
+Patch1000: lua-cjson-integer-support.patch
 
 BuildRequires: libcurl-devel
 BuildRequires: ncurses-devel
@@ -71,6 +72,9 @@ This package contains development files for %{name}.
 
 # lua-cjson
 %setup -n lua-%{version} -T -D -a 1000
+cd %{lua_cjson_xprefix}
+%patch1000 -p1
+cd ..
 
 # lua-curl
 %setup -n lua-%{version} -T -D -a 1100
