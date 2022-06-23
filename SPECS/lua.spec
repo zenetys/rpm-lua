@@ -42,6 +42,7 @@ Source1300: https://github.com/lunarmodules/luasocket/archive/refs/tags/v%{lua_s
 
 Patch0: lua-5.3.6-lua-path.patch
 Patch1000: lua-cjson-integer-support.patch
+Patch1001: lua-cjson-local-cflags.patch
 
 BuildRequires: libcurl-devel
 BuildRequires: ncurses-devel
@@ -74,6 +75,7 @@ This package contains development files for %{name}.
 %setup -n lua-%{version} -T -D -a 1000
 cd %{lua_cjson_xprefix}
 %patch1000 -p1
+%patch1001 -p1
 cd ..
 
 # lua-curl
@@ -93,7 +95,7 @@ make linux MYCFLAGS='-g -fPIC'
 
 # lua-cjson
 cd %{lua_cjson_xprefix}
-make LUA_INCLUDE_DIR=../src/
+make LUA_INCLUDE_DIR=../src/ LOCAL_CFLAGS='-g'
 cd ..
 
 # lua-curl
@@ -103,12 +105,12 @@ cd ..
 
 # luafilesystem
 cd %{lua_filesystem_xprefix}
-make LUA_INC=-I../src
+make LUA_INC='-I../src -g'
 cd ..
 
 # luasocket
 cd %{lua_socket_xprefix}
-make %{lua_socket_makeopts}
+make %{lua_socket_makeopts} MYCFLAGS='-g'
 cd ..
 
 %install
