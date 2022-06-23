@@ -119,7 +119,9 @@ mkdir -p %{buildroot}/opt/lua-%{major_version}/share/lua
 
 # lua-cjson
 cd %{lua_cjson_xprefix}
-make install PREFIX=%{buildroot}/opt/lua-%{major_version} LUA_CMODULE_DIR=%{buildroot}/opt/lua-%{major_version}/lib/lua
+make install \
+    PREFIX=%{buildroot}/opt/lua-%{major_version} \
+    LUA_CMODULE_DIR=%{buildroot}/opt/lua-%{major_version}/lib/lua
 cd ..
 
 # lua-curl
@@ -129,7 +131,9 @@ cd ..
 
 # luafilesystem
 cd %{lua_filesystem_xprefix}
-make install DESTDIR=%{buildroot} LUA_LIBDIR=/opt/lua-%{major_version}/lib/lua
+make install \
+    DESTDIR=%{buildroot} \
+    LUA_LIBDIR=/opt/lua-%{major_version}/lib/lua
 cd ..
 
 # luasocket
