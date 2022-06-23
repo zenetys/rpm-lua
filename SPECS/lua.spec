@@ -26,10 +26,13 @@
     CDIR_linux=lib/lua \\\
     SOCKET_V=%{lua_socket_version}
 
+%define lua_posix_version 35.1
+%define lua_posix_xprefix luaposix-%{lua_posix_version}
+
 Name: lua53z
 Summary: Powerful light-weight programming language
 Version: %{major_version}.%{minor_version}
-Release: 1%{?dist}.zenetys
+Release: 2%{?dist}.zenetys
 License: MIT
 Group: Development/Languages
 URL: http://www.lua.org/
@@ -39,6 +42,7 @@ Source1000: https://github.com/mpx/lua-cjson/archive/refs/tags/%{lua_cjson_versi
 Source1100: https://github.com/Lua-cURL/Lua-cURLv3/archive/refs/tags/v%{lua_curl_version}.tar.gz#/%{lua_curl_xprefix}.tar.gz
 Source1200: https://github.com/keplerproject/luafilesystem/archive/refs/tags/v%{lua_filesystem_version}.tar.gz#/%{lua_filesystem_xprefix}.tar.gz
 Source1300: https://github.com/lunarmodules/luasocket/archive/refs/tags/v%{lua_socket_version}.tar.gz#/%{lua_socket_xprefix}.tar.gz
+Source1400: https://github.com/luaposix/luaposix/archive/refs/tags/v%{lua_posix_version}.tar.gz#/%{lua_posix_xprefix}.tar.gz
 
 Patch0: lua-5.3.6-lua-path.patch
 Patch1000: lua-cjson-integer-support.patch
@@ -57,6 +61,7 @@ modules:
 - Lua-cURLv3 (https://github.com/Lua-cURL/Lua-cURLv3)
 - luafilesystem (https://github.com/keplerproject/luafilesystem)
 - luasocket (https://github.com/lunarmodules/luasocket)
+- luaposix (https://github.com/luaposix/luaposix)
 
 %package devel
 Summary: Development files for %{name}
@@ -89,9 +94,18 @@ cd ..
 sed -i -re 's,(LUASOCKET_VERSION\s+"[^[:space:]]+\s+).*,\1%{lua_socket_version}",' \
     %{lua_socket_xprefix}/src/luasocket.h
 
+# luaposix
+%setup -n lua-%{version} -T -D -a 1400
+
 %build
 # lua
 make linux MYCFLAGS='-g -fPIC'
+
+# Some modules are built using luke, which is a lua script, but the
+# standard lua binary of the distro may not be present (eg: el8).
+# We could add a BuildRequire on the distro lua, but since we've just
+# built it, let's use this one.
+export PATH="$PWD/src:$PATH"
 
 # lua-cjson
 cd %{lua_cjson_xprefix}
@@ -113,7 +127,15 @@ cd %{lua_socket_xprefix}
 make %{lua_socket_makeopts} MYCFLAGS='-g'
 cd ..
 
+# luaposix
+cd %{lua_posix_xprefix}
+./build-aux/luke LUA_INCDIR=../src CFLAGS='-g'
+cd ..
+
 %install
+# Make sure we have a lua binary in $PATH (see comments in build section).
+export PATH="$PWD/src:$PATH"
+
 # lua
 make install INSTALL_TOP=%{buildroot}/opt/lua-%{major_version}
 mkdir -p %{buildroot}/opt/lua-%{major_version}/lib/lua
@@ -141,6 +163,14 @@ cd ..
 # luasocket
 cd %{lua_socket_xprefix}
 make install %{lua_socket_makeopts} DESTDIR=%{buildroot}
+cd ..
+
+# luaposix
+cd %{lua_posix_xprefix}
+./build-aux/luke install \
+    PREFIX=%{buildroot}/opt/lua-%{major_version} \
+    INST_LUADIR=%{buildroot}/opt/lua-%{major_version}/share/lua \
+    INST_LIBDIR=%{buildroot}/opt/lua-%{major_version}/lib/lua
 cd ..
 
 %files
