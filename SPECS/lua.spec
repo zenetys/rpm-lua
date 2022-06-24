@@ -1,6 +1,9 @@
 %global major_version 5.3
 %global minor_version 6
 
+%define libssl_version 1.1.1p
+%define libssl_xprefix openssl-%{libssl_version}
+
 %define lua_cjson_version 2.1.0
 %define lua_cjson_xprefix lua-cjson-%{lua_cjson_version}
 
@@ -29,6 +32,9 @@
 %define lua_posix_version 35.1
 %define lua_posix_xprefix luaposix-%{lua_posix_version}
 
+%define lua_ossl_version 20200709
+%define lua_ossl_xprefix luaossl-rel-%{lua_ossl_version}
+
 Name: lua53z
 Summary: Powerful light-weight programming language
 Version: %{major_version}.%{minor_version}
@@ -38,11 +44,13 @@ Group: Development/Languages
 URL: http://www.lua.org/
 
 Source0: https://www.lua.org/ftp/lua-%{version}.tar.gz
+Source100: https://www.openssl.org/source/%{libssl_xprefix}.tar.gz
 Source1000: https://github.com/mpx/lua-cjson/archive/refs/tags/%{lua_cjson_version}.tar.gz#/%{lua_cjson_xprefix}.tar.gz
 Source1100: https://github.com/Lua-cURL/Lua-cURLv3/archive/refs/tags/v%{lua_curl_version}.tar.gz#/%{lua_curl_xprefix}.tar.gz
 Source1200: https://github.com/keplerproject/luafilesystem/archive/refs/tags/v%{lua_filesystem_version}.tar.gz#/%{lua_filesystem_xprefix}.tar.gz
 Source1300: https://github.com/lunarmodules/luasocket/archive/refs/tags/v%{lua_socket_version}.tar.gz#/%{lua_socket_xprefix}.tar.gz
 Source1400: https://github.com/luaposix/luaposix/archive/refs/tags/v%{lua_posix_version}.tar.gz#/%{lua_posix_xprefix}.tar.gz
+Source1500: https://github.com/wahern/luaossl/archive/refs/tags/rel-%{lua_ossl_version}.tar.gz#/%{lua_ossl_xprefix}.tar.gz
 
 Patch0: lua-5.3.6-lua-path.patch
 Patch1000: lua-cjson-integer-support.patch
@@ -50,6 +58,8 @@ Patch1001: lua-cjson-local-cflags.patch
 
 BuildRequires: libcurl-devel
 BuildRequires: ncurses-devel
+BuildRequires: perl-Data-Dumper
+BuildRequires: perl-IPC-Cmd
 BuildRequires: readline-devel
 
 %description
@@ -62,6 +72,7 @@ modules:
 - luafilesystem (https://github.com/keplerproject/luafilesystem)
 - luasocket (https://github.com/lunarmodules/luasocket)
 - luaposix (https://github.com/luaposix/luaposix)
+- luaossl (https://github.com/wahern/luaossl), static link with %{libssl_xprefix}
 
 %package devel
 Summary: Development files for %{name}
@@ -75,6 +86,9 @@ This package contains development files for %{name}.
 # lua
 %setup -n lua-%{version}
 %patch0 -p1
+
+# libssl
+%setup -n lua-%{version} -T -D -a 100
 
 # lua-cjson
 %setup -n lua-%{version} -T -D -a 1000
@@ -97,15 +111,31 @@ sed -i -re 's,(LUASOCKET_VERSION\s+"[^[:space:]]+\s+).*,\1%{lua_socket_version}"
 # luaposix
 %setup -n lua-%{version} -T -D -a 1400
 
+# luaossl
+%setup -n lua-%{version} -T -D -a 1500
+
 %build
 # lua
 make linux %{?_smp_mflags} MYCFLAGS='-g -fPIC'
+lua_inc="$PWD/src"
+[[ -e $lua_inc/lua.h ]] || exit 1
 
 # Some modules are built using luke, which is a lua script, but the
 # standard lua binary of the distro may not be present (eg: el8).
 # We could add a BuildRequire on the distro lua, but since we've just
 # built it, let's use this one.
 export PATH="$PWD/src:$PATH"
+
+# libssl
+cd %{libssl_xprefix}
+./config no-shared
+make %{?_smp_mflags}
+ssl_inc="$PWD/include"
+ssl_lib="$PWD"
+cd ..
+[[ -e $ssl_inc/openssl/ssl.h ]] || exit 1
+[[ -e $ssl_lib/libssl.a ]] || exit 1
+[[ -e $ssl_lib/libcrypto.a ]] || exit 1
 
 # lua-cjson
 cd %{lua_cjson_xprefix}
@@ -130,6 +160,14 @@ cd ..
 # luaposix
 cd %{lua_posix_xprefix}
 ./build-aux/luke LUA_INCDIR=../src CFLAGS='-g'
+cd ..
+
+# luaossl
+cd %{lua_ossl_xprefix}
+make %{?_smp_mflags} \
+    LUA_APIS='%{major_version}' \
+    CFLAGS="-g -I$ssl_inc -I$lua_inc" \
+    LDFLAGS="-L$ssl_lib"
 cd ..
 
 %install
@@ -172,6 +210,23 @@ cd %{lua_posix_xprefix}
     INST_LUADIR=%{buildroot}/opt/lua-%{major_version}/share/lua \
     INST_LIBDIR=%{buildroot}/opt/lua-%{major_version}/lib/lua
 cd ..
+
+# luaossl
+cd %{lua_ossl_xprefix}
+vshort=$(echo '%{major_version}' |tr -d .)
+make install%{major_version} \
+    prefix=%{buildroot}/opt/lua-%{major_version} \
+    lua${vshort}path=%{buildroot}/opt/lua-%{major_version}/share/lua \
+    lua${vshort}cpath=%{buildroot}/opt/lua-%{major_version}/lib/lua
+cd ..
+%if 0%{?rhel} == 7
+# On el7, find-debuginfo.sh from RPM macro __debug_install_post fails
+# when extracting debug info from luaossl's _openssl.so because of
+# /usr/lib/rpm/debugedit failing with message "Failed to write file:
+# invalid section alignment". This trick allows to skip processing
+# the file while still creating a debuginfo package.
+eu-strip --remove-comment %{buildroot}/opt/lua-5.3/lib/lua/_openssl.so
+%endif
 
 %files
 %defattr(-,root,root,-)
