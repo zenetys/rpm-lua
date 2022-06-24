@@ -38,7 +38,7 @@
 Name: lua53z
 Summary: Powerful light-weight programming language
 Version: %{major_version}.%{minor_version}
-Release: 2%{?dist}.zenetys
+Release: 3%{?dist}.zenetys
 License: MIT
 Group: Development/Languages
 URL: http://www.lua.org/
@@ -51,6 +51,7 @@ Source1200: https://github.com/keplerproject/luafilesystem/archive/refs/tags/v%{
 Source1300: https://github.com/lunarmodules/luasocket/archive/refs/tags/v%{lua_socket_version}.tar.gz#/%{lua_socket_xprefix}.tar.gz
 Source1400: https://github.com/luaposix/luaposix/archive/refs/tags/v%{lua_posix_version}.tar.gz#/%{lua_posix_xprefix}.tar.gz
 Source1500: https://github.com/wahern/luaossl/archive/refs/tags/rel-%{lua_ossl_version}.tar.gz#/%{lua_ossl_xprefix}.tar.gz
+Source1600: http://www.arpalert.org/src/lua/print_r.lua
 
 Patch0: lua-5.3.6-lua-path.patch
 Patch1000: lua-cjson-integer-support.patch
@@ -73,6 +74,7 @@ modules:
 - luasocket (https://github.com/lunarmodules/luasocket)
 - luaposix (https://github.com/luaposix/luaposix)
 - luaossl (https://github.com/wahern/luaossl), static link with %{libssl_xprefix}
+- print_r.lua (http://www.arpalert.org/haproxy-scripts.html)
 
 %package devel
 Summary: Development files for %{name}
@@ -227,6 +229,10 @@ cd ..
 # the file while still creating a debuginfo package.
 eu-strip --remove-comment %{buildroot}/opt/lua-5.3/lib/lua/_openssl.so
 %endif
+
+# print_r
+install -D -p -m 644 %{SOURCE1600} \
+    %{buildroot}/opt/lua-%{major_version}/share/lua/
 
 %files
 %defattr(-,root,root,-)
