@@ -184,7 +184,8 @@ cd ..
 %dir /opt/lua-%{major_version}/lib/lua
 /opt/lua-%{major_version}/lib/lua/*
 %dir /opt/lua-%{major_version}/share
-/opt/lua-%{major_version}/share/*
+%dir /opt/lua-%{major_version}/share/lua
+/opt/lua-%{major_version}/share/lua/*
 
 %files devel
 /opt/lua-%{major_version}/lib/liblua.a
