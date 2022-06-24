@@ -99,7 +99,7 @@ sed -i -re 's,(LUASOCKET_VERSION\s+"[^[:space:]]+\s+).*,\1%{lua_socket_version}"
 
 %build
 # lua
-make linux MYCFLAGS='-g -fPIC'
+make linux %{?_smp_mflags} MYCFLAGS='-g -fPIC'
 
 # Some modules are built using luke, which is a lua script, but the
 # standard lua binary of the distro may not be present (eg: el8).
@@ -109,22 +109,22 @@ export PATH="$PWD/src:$PATH"
 
 # lua-cjson
 cd %{lua_cjson_xprefix}
-make LUA_INCLUDE_DIR=../src/ LOCAL_CFLAGS='-g'
+make %{?_smp_mflags} LUA_INCLUDE_DIR=../src/ LOCAL_CFLAGS='-g'
 cd ..
 
 # lua-curl
 cd %{lua_curl_xprefix}
-make %{lua_curl_makeopts}
+make %{?_smp_mflags} %{lua_curl_makeopts}
 cd ..
 
 # luafilesystem
 cd %{lua_filesystem_xprefix}
-make LUA_INC='-I../src -g'
+make %{?_smp_mflags} LUA_INC='-I../src -g'
 cd ..
 
 # luasocket
 cd %{lua_socket_xprefix}
-make %{lua_socket_makeopts} MYCFLAGS='-g'
+make %{?_smp_mflags} %{lua_socket_makeopts} MYCFLAGS='-g'
 cd ..
 
 # luaposix
