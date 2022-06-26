@@ -35,10 +35,15 @@
 %define lua_ossl_version 20200709
 %define lua_ossl_xprefix luaossl-rel-%{lua_ossl_version}
 
+# luasnmp version 1.0.8
+# luasnmp does not provide release tarballs not version tags
+%define lua_snmp_version a369ad9a1271d9c6327d0c3548b08d63c250ab74
+%define lua_snmp_xprefix luasnmp-%{lua_snmp_version}
+
 Name: lua53z
 Summary: Powerful light-weight programming language
 Version: %{major_version}.%{minor_version}
-Release: 3%{?dist}.zenetys
+Release: 4%{?dist}.zenetys
 License: MIT
 Group: Development/Languages
 URL: http://www.lua.org/
@@ -52,6 +57,7 @@ Source1300: https://github.com/lunarmodules/luasocket/archive/refs/tags/v%{lua_s
 Source1400: https://github.com/luaposix/luaposix/archive/refs/tags/v%{lua_posix_version}.tar.gz#/%{lua_posix_xprefix}.tar.gz
 Source1500: https://github.com/wahern/luaossl/archive/refs/tags/rel-%{lua_ossl_version}.tar.gz#/%{lua_ossl_xprefix}.tar.gz
 Source1600: http://www.arpalert.org/src/lua/print_r.lua
+Source1700: https://github.com/hleuwer/luasnmp/archive/%{lua_snmp_version}.tar.gz#/%{lua_snmp_xprefix}.tar.gz
 
 Patch0: lua-5.3.6-lua-path.patch
 Patch1000: lua-cjson-integer-support.patch
@@ -59,6 +65,7 @@ Patch1001: lua-cjson-local-cflags.patch
 
 BuildRequires: libcurl-devel
 BuildRequires: ncurses-devel
+BuildRequires: net-snmp-devel
 BuildRequires: perl-Data-Dumper
 BuildRequires: perl-IPC-Cmd
 BuildRequires: readline-devel
@@ -75,6 +82,7 @@ modules:
 - luaposix (https://github.com/luaposix/luaposix)
 - luaossl (https://github.com/wahern/luaossl), static link with %{libssl_xprefix}
 - print_r.lua (http://www.arpalert.org/haproxy-scripts.html)
+- luasnmp (https://github.com/hleuwer/luasnmp)
 
 %package devel
 Summary: Development files for %{name}
@@ -115,6 +123,10 @@ sed -i -re 's,(LUASOCKET_VERSION\s+"[^[:space:]]+\s+).*,\1%{lua_socket_version}"
 
 # luaossl
 %setup -n lua-%{version} -T -D -a 1500
+
+# luasnmp
+%setup -n lua-%{version} -T -D -a 1700
+sed -i -re 's,^(DEF =),\1 $(LOCAL_CFLAGS),' %{lua_snmp_xprefix}/config
 
 %build
 # lua
@@ -170,6 +182,11 @@ make %{?_smp_mflags} \
     LUA_APIS='%{major_version}' \
     CFLAGS="-g -I$ssl_inc -I$lua_inc" \
     LDFLAGS="-L$ssl_lib"
+cd ..
+
+# luasnmp
+cd %{lua_snmp_xprefix}
+make %{?_smp_mflags} LUAINC="$lua_inc" LOCAL_CFLAGS='-g'
 cd ..
 
 %install
@@ -233,6 +250,17 @@ eu-strip --remove-comment %{buildroot}/opt/lua-5.3/lib/lua/_openssl.so
 # print_r
 install -D -p -m 644 %{SOURCE1600} \
     %{buildroot}/opt/lua-%{major_version}/share/lua/
+
+# luasnmp
+cd %{lua_snmp_xprefix}
+make install \
+    INSTALL_SHARE=%{buildroot}/opt/lua-%{major_version}/share/lua \
+    INSTALL_LIB=%{buildroot}/opt/lua-%{major_version}/lib/lua
+cd ..
+%if 0%{?rhel} == 7
+# el7 find-debuginfo.sh issue (same as above)
+eu-strip --remove-comment %{buildroot}/opt/lua-5.3/lib/lua/snmp/core.so
+%endif
 
 %files
 %defattr(-,root,root,-)
