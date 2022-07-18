@@ -32,7 +32,7 @@
 %define lua_posix_version 35.1
 %define lua_posix_xprefix luaposix-%{lua_posix_version}
 
-%define lua_ossl_version 20200709
+%define lua_ossl_version 20220711
 %define lua_ossl_xprefix luaossl-rel-%{lua_ossl_version}
 
 # luasnmp version 1.0.8
@@ -43,7 +43,7 @@
 Name: lua53z
 Summary: Powerful light-weight programming language
 Version: %{major_version}.%{minor_version}
-Release: 5%{?dist}.zenetys
+Release: 6%{?dist}.zenetys
 License: MIT
 Group: Development/Languages
 URL: http://www.lua.org/
