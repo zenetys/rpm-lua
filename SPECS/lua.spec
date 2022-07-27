@@ -18,7 +18,7 @@
 %define lua_filesystem_version 1_8_0
 %define lua_filesystem_xprefix luafilesystem-%{lua_filesystem_version}
 
-%define lua_socket_version 3.0.0
+%define lua_socket_version 3.1.0
 %define lua_socket_xprefix luasocket-%{lua_socket_version}
 %define lua_socket_makeopts \\\
     PLAT=linux \\\
@@ -43,7 +43,7 @@
 Name: lua53z
 Summary: Powerful light-weight programming language
 Version: %{major_version}.%{minor_version}
-Release: 6%{?dist}.zenetys
+Release: 7%{?dist}.zenetys
 License: MIT
 Group: Development/Languages
 URL: http://www.lua.org/
