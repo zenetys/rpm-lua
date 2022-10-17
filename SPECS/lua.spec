@@ -1,8 +1,8 @@
 %global major_version 5.3
 %global minor_version 6
 
-%define libssl_version 1.1.1q
-%define libssl_xprefix openssl-%{libssl_version}
+%define libssl_version 1_1_1r
+%define libssl_xprefix openssl-OpenSSL_%{libssl_version}
 
 %define lua_cjson_version 2.1.0
 %define lua_cjson_xprefix lua-cjson-%{lua_cjson_version}
@@ -43,13 +43,13 @@
 Name: lua53z
 Summary: Powerful light-weight programming language
 Version: %{major_version}.%{minor_version}
-Release: 8%{?dist}.zenetys
+Release: 9%{?dist}.zenetys
 License: MIT
 Group: Development/Languages
 URL: http://www.lua.org/
 
 Source0: https://www.lua.org/ftp/lua-%{version}.tar.gz
-Source100: https://www.openssl.org/source/%{libssl_xprefix}.tar.gz
+Source100: https://github.com/openssl/openssl/archive/refs/tags/%(x=%{libssl_xprefix}; echo ${x#*-}).tar.gz
 Source1000: https://github.com/mpx/lua-cjson/archive/refs/tags/%{lua_cjson_version}.tar.gz#/%{lua_cjson_xprefix}.tar.gz
 Source1001: lua-json-compat.lua
 Source1100: https://github.com/Lua-cURL/Lua-cURLv3/archive/refs/tags/v%{lua_curl_version}.tar.gz#/%{lua_curl_xprefix}.tar.gz
