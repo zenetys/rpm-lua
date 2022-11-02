@@ -63,11 +63,15 @@ Source1700: https://github.com/hleuwer/luasnmp/archive/%{lua_snmp_version}.tar.g
 Patch0: lua-5.3.6-lua-path.patch
 Patch1000: lua-cjson-integer-support.patch
 Patch1001: lua-cjson-local-cflags.patch
+Patch1700: luasnmp-no-des.patch
 
 BuildRequires: libcurl-devel
 BuildRequires: ncurses-devel
 BuildRequires: net-snmp-devel
 BuildRequires: perl-Data-Dumper
+%if 0%{?rhel} >= 9
+BuildRequires: perl-FindBin
+%endif
 BuildRequires: perl-IPC-Cmd
 BuildRequires: readline-devel
 
@@ -128,7 +132,10 @@ sed -i -re 's,(LUASOCKET_VERSION\s+"[^[:space:]]+\s+).*,\1%{lua_socket_version}"
 
 # luasnmp
 %setup -n lua-%{version} -T -D -a 1700
-sed -i -re 's,^(DEF =),\1 $(LOCAL_CFLAGS),' %{lua_snmp_xprefix}/config
+cd %{lua_snmp_xprefix}
+%patch1700 -p1
+sed -i -re 's,^(DEF =),\1 $(LOCAL_CFLAGS),' config
+cd ..
 
 %build
 # lua
