@@ -29,7 +29,7 @@
     CDIR_linux=lib/lua \\\
     SOCKET_V=%{lua_socket_version}
 
-%define lua_posix_version 35.1
+%define lua_posix_version 36.0
 %define lua_posix_xprefix luaposix-%{lua_posix_version}
 
 %define lua_ossl_version 20220711
@@ -43,7 +43,7 @@
 Name: lua53z
 Summary: Powerful light-weight programming language
 Version: %{major_version}.%{minor_version}
-Release: 10%{?dist}.zenetys
+Release: 11%{?dist}.zenetys
 License: MIT
 Group: Development/Languages
 URL: http://www.lua.org/
@@ -182,7 +182,11 @@ cd ..
 
 # luaposix
 cd %{lua_posix_xprefix}
-./build-aux/luke LUA_INCDIR=../src CFLAGS='-g'
+luaposix_cflags='-g'
+%if 0%{?rhel} <= 7
+luaposix_cflags+=' -D_BSD_SOURCE=1'
+%endif
+./build-aux/luke LUA_INCDIR=../src CFLAGS="$luaposix_cflags"
 cd ..
 
 # luaossl
