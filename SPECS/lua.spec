@@ -1,7 +1,7 @@
 %global major_version 5.3
 %global minor_version 6
 
-%define libssl_version 1_1_1v
+%define libssl_version 1_1_1w
 %define libssl_xprefix openssl-OpenSSL_%{libssl_version}
 
 %define lua_cjson_version 2.1.0
@@ -43,7 +43,7 @@
 Name: lua53z
 Summary: Powerful light-weight programming language
 Version: %{major_version}.%{minor_version}
-Release: 15%{?dist}.zenetys
+Release: 16%{?dist}.zenetys
 License: MIT
 Group: Development/Languages
 URL: http://www.lua.org/
