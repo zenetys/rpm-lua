@@ -1,4 +1,4 @@
-%global lua_major_version 5.3
+%global lua_major_version 5.4
 %global lua_minor_version 6
 
 %define libssl_version 1_1_1w
@@ -40,10 +40,10 @@
 %define lua_snmp_version a369ad9a1271d9c6327d0c3548b08d63c250ab74
 %define lua_snmp_xprefix luasnmp-%{lua_snmp_version}
 
-Name: lua53z
+Name: lua54z
 Summary: Powerful light-weight programming language
 Version: %{lua_major_version}.%{lua_minor_version}
-Release: 16%{?dist}.zenetys
+Release: 1%{?dist}.zenetys
 License: MIT
 Group: Development/Languages
 URL: http://www.lua.org/
@@ -60,7 +60,7 @@ Source1500: https://github.com/wahern/luaossl/archive/refs/tags/rel-%{lua_ossl_v
 Source1600: http://www.arpalert.org/src/lua/print_r.lua
 Source1700: https://github.com/hleuwer/luasnmp/archive/%{lua_snmp_version}.tar.gz#/%{lua_snmp_xprefix}.tar.gz
 
-Patch0: lua-5.3.6-lua-path.patch
+Patch0: lua-path.patch
 Patch1000: lua-cjson-integer-support.patch
 Patch1001: lua-cjson-local-cflags.patch
 Patch1700: luasnmp-no-des.patch
@@ -78,7 +78,7 @@ BuildRequires: readline-devel
 %description
 Lua %{lua_major_version} packaged to be non-intrusive so that is does not replace
 the standard package provided by the distribution. This package
-installs its files in /opt/lua-5.3 and provides the following Lua
+installs its files in /opt/lua-%{lua_major_version} and provides the following Lua
 modules:
 - lua-cjson (https://github.com/mpx/lua-cjson)
 - json.lua, incomplete lua-json compatibility layer using lua-cjson
@@ -203,9 +203,10 @@ cd ..
 export PATH="$PWD/src:$PATH"
 
 # lua
-make install INSTALL_TOP=%{buildroot}/opt/lua-%{lua_major_version}
-mkdir -p %{buildroot}/opt/lua-%{lua_major_version}/lib/lua
-mkdir -p %{buildroot}/opt/lua-%{lua_major_version}/share/lua
+make install \
+    INSTALL_TOP='%{buildroot}/opt/lua-%{lua_major_version}' \
+    INSTALL_LMOD='$(INSTALL_TOP)/share/lua' \
+    INSTALL_CMOD='$(INSTALL_TOP)/lib/lua'
 
 # lua-cjson
 cd %{lua_cjson_xprefix}
@@ -255,7 +256,7 @@ cd ..
 # /usr/lib/rpm/debugedit failing with message "Failed to write file:
 # invalid section alignment". This trick allows to skip processing
 # the file while still creating a debuginfo package.
-eu-strip --remove-comment %{buildroot}/opt/lua-5.3/lib/lua/_openssl.so
+eu-strip --remove-comment %{buildroot}/opt/lua-%{lua_major_version}/lib/lua/_openssl.so
 %endif
 
 # print_r
@@ -270,7 +271,7 @@ make install \
 cd ..
 %if 0%{?rhel} == 7
 # el7 find-debuginfo.sh issue (same as above)
-eu-strip --remove-comment %{buildroot}/opt/lua-5.3/lib/lua/snmp/core.so
+eu-strip --remove-comment %{buildroot}/opt/lua-%{lua_major_version}/lib/lua/snmp/core.so
 %endif
 
 %files
