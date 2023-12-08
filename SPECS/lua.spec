@@ -1,5 +1,5 @@
-%global major_version 5.3
-%global minor_version 6
+%global lua_major_version 5.3
+%global lua_minor_version 6
 
 %define libssl_version 1_1_1w
 %define libssl_xprefix openssl-OpenSSL_%{libssl_version}
@@ -12,8 +12,8 @@
 %define lua_curl_makeopts \\\
     LUA_INC=../src/ \\\
     LIBDIR=../src/ \\\
-    LUA_CMOD=/opt/lua-%{major_version}/lib/lua \\\
-    LUA_LMOD=/opt/lua-%{major_version}/share/lua
+    LUA_CMOD=/opt/lua-%{lua_major_version}/lib/lua \\\
+    LUA_LMOD=/opt/lua-%{lua_major_version}/share/lua
 
 %define lua_filesystem_version 1_8_0
 %define lua_filesystem_xprefix luafilesystem-%{lua_filesystem_version}
@@ -22,9 +22,9 @@
 %define lua_socket_xprefix luasocket-%{lua_socket_version}
 %define lua_socket_makeopts \\\
     PLAT=linux \\\
-    LUAV=%{major_version} \\\
+    LUAV=%{lua_major_version} \\\
     LUAINC_linux=../../src \\\
-    LUAPREFIX_linux=/opt/lua-%{major_version} \\\
+    LUAPREFIX_linux=/opt/lua-%{lua_major_version} \\\
     LDIR_linux=share/lua \\\
     CDIR_linux=lib/lua \\\
     SOCKET_V=%{lua_socket_version}
@@ -42,7 +42,7 @@
 
 Name: lua53z
 Summary: Powerful light-weight programming language
-Version: %{major_version}.%{minor_version}
+Version: %{lua_major_version}.%{lua_minor_version}
 Release: 16%{?dist}.zenetys
 License: MIT
 Group: Development/Languages
@@ -76,7 +76,7 @@ BuildRequires: perl-IPC-Cmd
 BuildRequires: readline-devel
 
 %description
-Lua %{major_version} packaged to be non-intrusive so that is does not replace
+Lua %{lua_major_version} packaged to be non-intrusive so that is does not replace
 the standard package provided by the distribution. This package
 installs its files in /opt/lua-5.3 and provides the following Lua
 modules:
@@ -188,7 +188,7 @@ cd ..
 # luaossl
 cd %{lua_ossl_xprefix}
 make %{?_smp_mflags} \
-    LUA_APIS='%{major_version}' \
+    LUA_APIS='%{lua_major_version}' \
     CFLAGS="-g -I$ssl_inc -I$lua_inc" \
     LDFLAGS="-L$ssl_lib"
 cd ..
@@ -203,18 +203,18 @@ cd ..
 export PATH="$PWD/src:$PATH"
 
 # lua
-make install INSTALL_TOP=%{buildroot}/opt/lua-%{major_version}
-mkdir -p %{buildroot}/opt/lua-%{major_version}/lib/lua
-mkdir -p %{buildroot}/opt/lua-%{major_version}/share/lua
+make install INSTALL_TOP=%{buildroot}/opt/lua-%{lua_major_version}
+mkdir -p %{buildroot}/opt/lua-%{lua_major_version}/lib/lua
+mkdir -p %{buildroot}/opt/lua-%{lua_major_version}/share/lua
 
 # lua-cjson
 cd %{lua_cjson_xprefix}
 make install \
-    PREFIX=%{buildroot}/opt/lua-%{major_version} \
-    LUA_CMODULE_DIR=%{buildroot}/opt/lua-%{major_version}/lib/lua
+    PREFIX=%{buildroot}/opt/lua-%{lua_major_version} \
+    LUA_CMODULE_DIR=%{buildroot}/opt/lua-%{lua_major_version}/lib/lua
 cd ..
 install -D -p -m 644 %{SOURCE1001} \
-    %{buildroot}/opt/lua-%{major_version}/share/lua/json.lua
+    %{buildroot}/opt/lua-%{lua_major_version}/share/lua/json.lua
 
 # lua-curl
 cd %{lua_curl_xprefix}
@@ -225,7 +225,7 @@ cd ..
 cd %{lua_filesystem_xprefix}
 make install \
     DESTDIR=%{buildroot} \
-    LUA_LIBDIR=/opt/lua-%{major_version}/lib/lua
+    LUA_LIBDIR=/opt/lua-%{lua_major_version}/lib/lua
 cd ..
 
 # luasocket
@@ -236,18 +236,18 @@ cd ..
 # luaposix
 cd %{lua_posix_xprefix}
 ./build-aux/luke install \
-    PREFIX=%{buildroot}/opt/lua-%{major_version} \
-    INST_LUADIR=%{buildroot}/opt/lua-%{major_version}/share/lua \
-    INST_LIBDIR=%{buildroot}/opt/lua-%{major_version}/lib/lua
+    PREFIX=%{buildroot}/opt/lua-%{lua_major_version} \
+    INST_LUADIR=%{buildroot}/opt/lua-%{lua_major_version}/share/lua \
+    INST_LIBDIR=%{buildroot}/opt/lua-%{lua_major_version}/lib/lua
 cd ..
 
 # luaossl
 cd %{lua_ossl_xprefix}
-vshort=$(echo '%{major_version}' |tr -d .)
-make install%{major_version} \
-    prefix=%{buildroot}/opt/lua-%{major_version} \
-    lua${vshort}path=%{buildroot}/opt/lua-%{major_version}/share/lua \
-    lua${vshort}cpath=%{buildroot}/opt/lua-%{major_version}/lib/lua
+vshort=$(echo '%{lua_major_version}' |tr -d .)
+make install%{lua_major_version} \
+    prefix=%{buildroot}/opt/lua-%{lua_major_version} \
+    lua${vshort}path=%{buildroot}/opt/lua-%{lua_major_version}/share/lua \
+    lua${vshort}cpath=%{buildroot}/opt/lua-%{lua_major_version}/lib/lua
 cd ..
 %if 0%{?rhel} == 7
 # On el7, find-debuginfo.sh from RPM macro __debug_install_post fails
@@ -260,13 +260,13 @@ eu-strip --remove-comment %{buildroot}/opt/lua-5.3/lib/lua/_openssl.so
 
 # print_r
 install -D -p -m 644 %{SOURCE1600} \
-    %{buildroot}/opt/lua-%{major_version}/share/lua/
+    %{buildroot}/opt/lua-%{lua_major_version}/share/lua/
 
 # luasnmp
 cd %{lua_snmp_xprefix}
 make install \
-    INSTALL_SHARE=%{buildroot}/opt/lua-%{major_version}/share/lua \
-    INSTALL_LIB=%{buildroot}/opt/lua-%{major_version}/lib/lua
+    INSTALL_SHARE=%{buildroot}/opt/lua-%{lua_major_version}/share/lua \
+    INSTALL_LIB=%{buildroot}/opt/lua-%{lua_major_version}/lib/lua
 cd ..
 %if 0%{?rhel} == 7
 # el7 find-debuginfo.sh issue (same as above)
@@ -275,19 +275,19 @@ eu-strip --remove-comment %{buildroot}/opt/lua-5.3/lib/lua/snmp/core.so
 
 %files
 %defattr(-,root,root,-)
-%dir /opt/lua-%{major_version}
-%dir /opt/lua-%{major_version}/bin
-/opt/lua-%{major_version}/bin/*
-%dir /opt/lua-%{major_version}/man
-/opt/lua-%{major_version}/man/*
-%dir /opt/lua-%{major_version}/lib
-%dir /opt/lua-%{major_version}/lib/lua
-/opt/lua-%{major_version}/lib/lua/*
-%dir /opt/lua-%{major_version}/share
-%dir /opt/lua-%{major_version}/share/lua
-/opt/lua-%{major_version}/share/lua/*
+%dir /opt/lua-%{lua_major_version}
+%dir /opt/lua-%{lua_major_version}/bin
+/opt/lua-%{lua_major_version}/bin/*
+%dir /opt/lua-%{lua_major_version}/man
+/opt/lua-%{lua_major_version}/man/*
+%dir /opt/lua-%{lua_major_version}/lib
+%dir /opt/lua-%{lua_major_version}/lib/lua
+/opt/lua-%{lua_major_version}/lib/lua/*
+%dir /opt/lua-%{lua_major_version}/share
+%dir /opt/lua-%{lua_major_version}/share/lua
+/opt/lua-%{lua_major_version}/share/lua/*
 
 %files devel
-/opt/lua-%{major_version}/lib/liblua.a
-%dir /opt/lua-%{major_version}/include
-/opt/lua-%{major_version}/include/*
+/opt/lua-%{lua_major_version}/lib/liblua.a
+%dir /opt/lua-%{lua_major_version}/include
+/opt/lua-%{lua_major_version}/include/*
