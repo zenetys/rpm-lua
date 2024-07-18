@@ -1,5 +1,5 @@
 %global lua_major_version 5.4
-%global lua_minor_version 6
+%global lua_minor_version 7
 
 %define libssl_version 1_1_1w
 %define libssl_xprefix openssl-OpenSSL_%{libssl_version}
