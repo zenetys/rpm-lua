@@ -250,14 +250,6 @@ make install%{lua_major_version} \
     lua${vshort}path=%{buildroot}/opt/%{name}/share/lua \
     lua${vshort}cpath=%{buildroot}/opt/%{name}/lib/lua
 cd ..
-%if 0%{?rhel} == 7
-# On el7, find-debuginfo.sh from RPM macro __debug_install_post fails
-# when extracting debug info from luaossl's _openssl.so because of
-# /usr/lib/rpm/debugedit failing with message "Failed to write file:
-# invalid section alignment". This trick allows to skip processing
-# the file while still creating a debuginfo package.
-eu-strip --remove-comment %{buildroot}/opt/%{name}/lib/lua/_openssl.so
-%endif
 
 # print_r
 install -D -p -m 644 %{SOURCE1600} \
@@ -269,10 +261,6 @@ make install \
     INSTALL_SHARE=%{buildroot}/opt/%{name}/share/lua \
     INSTALL_LIB=%{buildroot}/opt/%{name}/lib/lua
 cd ..
-%if 0%{?rhel} == 7
-# el7 find-debuginfo.sh issue (same as above)
-eu-strip --remove-comment %{buildroot}/opt/%{name}/lib/lua/snmp/core.so
-%endif
 
 %files
 %defattr(-,root,root,-)
