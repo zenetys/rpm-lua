@@ -32,7 +32,6 @@ URL: http://www.lua.org/
 
 Source0: https://www.lua.org/ftp/lua-%{version}.tar.gz
 Source1000: https://github.com/mpx/lua-cjson/archive/refs/tags/%{lua_cjson_version}.tar.gz#/%{lua_cjson_xprefix}.tar.gz
-Source1001: lua-json-compat.lua
 Source1100: https://github.com/Lua-cURL/Lua-cURLv3/archive/refs/tags/v%{lua_curl_version}.tar.gz#/%{lua_curl_xprefix}.tar.gz
 Source1200: https://github.com/keplerproject/luafilesystem/archive/refs/tags/v%{lua_filesystem_version}.tar.gz#/%{lua_filesystem_xprefix}.tar.gz
 Source1600: http://www.arpalert.org/src/lua/print_r.lua
@@ -54,7 +53,6 @@ the standard package provided by the distribution. This package
 installs its files in /opt/%{name} and provides the following Lua
 modules:
 - lua-cjson (https://github.com/mpx/lua-cjson)
-- json.lua, incomplete lua-json compatibility layer using lua-cjson
 - Lua-cURLv3 (https://github.com/Lua-cURL/Lua-cURLv3)
 - luafilesystem (https://github.com/keplerproject/luafilesystem)
 - print_r.lua (http://www.arpalert.org/haproxy-scripts.html)
@@ -141,8 +139,6 @@ make install \
     PREFIX=%{buildroot}/opt/%{name} \
     LUA_CMODULE_DIR=%{buildroot}/opt/%{name}/lib/lua
 cd ..
-install -D -p -m 644 %{SOURCE1001} \
-    %{buildroot}/opt/%{name}/share/lua/json.lua
 
 # lua-curl
 cd %{lua_curl_xprefix}
