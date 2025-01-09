@@ -3,9 +3,6 @@
 %global lua_major_version 5.4
 %global lua_minor_version 7
 
-%define libssl_version 1_1_1w
-%define libssl_xprefix openssl-OpenSSL_%{libssl_version}
-
 %define lua_cjson_version 2.1.0
 %define lua_cjson_xprefix lua-cjson-%{lua_cjson_version}
 
@@ -34,9 +31,6 @@
 %define lua_posix_version 36.2.1
 %define lua_posix_xprefix luaposix-%{lua_posix_version}
 
-%define lua_ossl_version 20220711
-%define lua_ossl_xprefix luaossl-rel-%{lua_ossl_version}
-
 # luasnmp version 1.0.8
 # luasnmp does not provide release tarballs not version tags
 %define lua_snmp_version a369ad9a1271d9c6327d0c3548b08d63c250ab74
@@ -51,14 +45,12 @@ Group: Development/Languages
 URL: http://www.lua.org/
 
 Source0: https://www.lua.org/ftp/lua-%{version}.tar.gz
-Source100: https://github.com/openssl/openssl/archive/refs/tags/%(x=%{libssl_xprefix}; echo ${x#*-}).tar.gz
 Source1000: https://github.com/mpx/lua-cjson/archive/refs/tags/%{lua_cjson_version}.tar.gz#/%{lua_cjson_xprefix}.tar.gz
 Source1001: lua-json-compat.lua
 Source1100: https://github.com/Lua-cURL/Lua-cURLv3/archive/refs/tags/v%{lua_curl_version}.tar.gz#/%{lua_curl_xprefix}.tar.gz
 Source1200: https://github.com/keplerproject/luafilesystem/archive/refs/tags/v%{lua_filesystem_version}.tar.gz#/%{lua_filesystem_xprefix}.tar.gz
 Source1300: https://github.com/lunarmodules/luasocket/archive/refs/tags/v%{lua_socket_version}.tar.gz#/%{lua_socket_xprefix}.tar.gz
 Source1400: https://github.com/luaposix/luaposix/archive/refs/tags/v%{lua_posix_version}.tar.gz#/%{lua_posix_xprefix}.tar.gz
-Source1500: https://github.com/wahern/luaossl/archive/refs/tags/rel-%{lua_ossl_version}.tar.gz#/%{lua_ossl_xprefix}.tar.gz
 Source1600: http://www.arpalert.org/src/lua/print_r.lua
 Source1700: https://github.com/hleuwer/luasnmp/archive/%{lua_snmp_version}.tar.gz#/%{lua_snmp_xprefix}.tar.gz
 
@@ -70,9 +62,6 @@ Patch1700: luasnmp-no-des.patch
 BuildRequires: libcurl-devel
 BuildRequires: ncurses-devel
 BuildRequires: net-snmp-devel
-BuildRequires: perl-Data-Dumper
-BuildRequires: perl-FindBin
-BuildRequires: perl-IPC-Cmd
 BuildRequires: readline-devel
 
 %description
@@ -86,7 +75,6 @@ modules:
 - luafilesystem (https://github.com/keplerproject/luafilesystem)
 - luasocket (https://github.com/lunarmodules/luasocket)
 - luaposix (https://github.com/luaposix/luaposix)
-- luaossl (https://github.com/wahern/luaossl), static link with %{libssl_xprefix}
 - print_r.lua (http://www.arpalert.org/haproxy-scripts.html)
 - luasnmp (https://github.com/hleuwer/luasnmp)
 
@@ -102,9 +90,6 @@ This package contains development files for %{name}.
 # lua
 %setup -n lua-%{version}
 %patch0 -p1
-
-# libssl
-%setup -n lua-%{version} -T -D -a 100
 
 # lua-cjson
 %setup -n lua-%{version} -T -D -a 1000
@@ -127,9 +112,6 @@ sed -i -re 's,(LUASOCKET_VERSION\s+"[^[:space:]]+\s+).*,\1%{lua_socket_version}"
 # luaposix
 %setup -n lua-%{version} -T -D -a 1400
 
-# luaossl
-%setup -n lua-%{version} -T -D -a 1500
-
 # luasnmp
 %setup -n lua-%{version} -T -D -a 1700
 cd %{lua_snmp_xprefix}
@@ -148,17 +130,6 @@ lua_inc="$PWD/src"
 # We could add a BuildRequire on the distro lua, but since we've just
 # built it, let's use this one.
 export PATH="$PWD/src:$PATH"
-
-# libssl
-cd %{libssl_xprefix}
-./config no-shared
-make %{?_smp_mflags}
-ssl_inc="$PWD/include"
-ssl_lib="$PWD"
-cd ..
-[[ -e $ssl_inc/openssl/ssl.h ]] || exit 1
-[[ -e $ssl_lib/libssl.a ]] || exit 1
-[[ -e $ssl_lib/libcrypto.a ]] || exit 1
 
 # lua-cjson
 cd %{lua_cjson_xprefix}
@@ -183,14 +154,6 @@ cd ..
 # luaposix
 cd %{lua_posix_xprefix}
 ./build-aux/luke LUA_INCDIR=../src CFLAGS='-g'
-cd ..
-
-# luaossl
-cd %{lua_ossl_xprefix}
-make %{?_smp_mflags} \
-    LUA_APIS='%{lua_major_version}' \
-    CFLAGS="-g -I$ssl_inc -I$lua_inc" \
-    LDFLAGS="-L$ssl_lib"
 cd ..
 
 # luasnmp
@@ -240,15 +203,6 @@ cd %{lua_posix_xprefix}
     PREFIX=%{buildroot}/opt/%{name} \
     INST_LUADIR=%{buildroot}/opt/%{name}/share/lua \
     INST_LIBDIR=%{buildroot}/opt/%{name}/lib/lua
-cd ..
-
-# luaossl
-cd %{lua_ossl_xprefix}
-vshort=$(echo '%{lua_major_version}' |tr -d .)
-make install%{lua_major_version} \
-    prefix=%{buildroot}/opt/%{name} \
-    lua${vshort}path=%{buildroot}/opt/%{name}/share/lua \
-    lua${vshort}cpath=%{buildroot}/opt/%{name}/lib/lua
 cd ..
 
 # print_r
