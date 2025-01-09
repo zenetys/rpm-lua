@@ -17,17 +17,6 @@
 %define lua_filesystem_version 1_8_0
 %define lua_filesystem_xprefix luafilesystem-%{lua_filesystem_version}
 
-%define lua_socket_version 3.1.0
-%define lua_socket_xprefix luasocket-%{lua_socket_version}
-%define lua_socket_makeopts \\\
-    PLAT=linux \\\
-    LUAV=%{lua_major_version} \\\
-    LUAINC_linux=../../src \\\
-    LUAPREFIX_linux=/opt/%{name} \\\
-    LDIR_linux=share/lua \\\
-    CDIR_linux=lib/lua \\\
-    SOCKET_V=%{lua_socket_version}
-
 %define lua_posix_version 36.2.1
 %define lua_posix_xprefix luaposix-%{lua_posix_version}
 
@@ -49,7 +38,6 @@ Source1000: https://github.com/mpx/lua-cjson/archive/refs/tags/%{lua_cjson_versi
 Source1001: lua-json-compat.lua
 Source1100: https://github.com/Lua-cURL/Lua-cURLv3/archive/refs/tags/v%{lua_curl_version}.tar.gz#/%{lua_curl_xprefix}.tar.gz
 Source1200: https://github.com/keplerproject/luafilesystem/archive/refs/tags/v%{lua_filesystem_version}.tar.gz#/%{lua_filesystem_xprefix}.tar.gz
-Source1300: https://github.com/lunarmodules/luasocket/archive/refs/tags/v%{lua_socket_version}.tar.gz#/%{lua_socket_xprefix}.tar.gz
 Source1400: https://github.com/luaposix/luaposix/archive/refs/tags/v%{lua_posix_version}.tar.gz#/%{lua_posix_xprefix}.tar.gz
 Source1600: http://www.arpalert.org/src/lua/print_r.lua
 Source1700: https://github.com/hleuwer/luasnmp/archive/%{lua_snmp_version}.tar.gz#/%{lua_snmp_xprefix}.tar.gz
@@ -73,7 +61,6 @@ modules:
 - json.lua, incomplete lua-json compatibility layer using lua-cjson
 - Lua-cURLv3 (https://github.com/Lua-cURL/Lua-cURLv3)
 - luafilesystem (https://github.com/keplerproject/luafilesystem)
-- luasocket (https://github.com/lunarmodules/luasocket)
 - luaposix (https://github.com/luaposix/luaposix)
 - print_r.lua (http://www.arpalert.org/haproxy-scripts.html)
 - luasnmp (https://github.com/hleuwer/luasnmp)
@@ -103,11 +90,6 @@ cd ..
 
 # luafilesystem
 %setup -n lua-%{version} -T -D -a 1200
-
-# luasocket
-%setup -n lua-%{version} -T -D -a 1300
-sed -i -re 's,(LUASOCKET_VERSION\s+"[^[:space:]]+\s+).*,\1%{lua_socket_version}",' \
-    %{lua_socket_xprefix}/src/luasocket.h
 
 # luaposix
 %setup -n lua-%{version} -T -D -a 1400
@@ -144,11 +126,6 @@ cd ..
 # luafilesystem
 cd %{lua_filesystem_xprefix}
 make %{?_smp_mflags} LUA_INC='-I../src -g'
-cd ..
-
-# luasocket
-cd %{lua_socket_xprefix}
-make %{?_smp_mflags} %{lua_socket_makeopts} MYCFLAGS='-g'
 cd ..
 
 # luaposix
@@ -190,11 +167,6 @@ cd %{lua_filesystem_xprefix}
 make install \
     DESTDIR=%{buildroot} \
     LUA_LIBDIR=/opt/%{name}/lib/lua
-cd ..
-
-# luasocket
-cd %{lua_socket_xprefix}
-make install %{lua_socket_makeopts} DESTDIR=%{buildroot}
 cd ..
 
 # luaposix

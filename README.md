@@ -1,6 +1,6 @@
 | Package&nbsp;name | Supported&nbsp;targets | Includes |
 | :--- | :--- | :--- |
-| lua54z | <nobr>el9</nobr> | <nobr>lua-cjson, json.lua, Lua-cURLv3, luafilesystem, </nobr><br/><nobr>luasocket, luaposix, print_r.lua, luasnmp</nobr> |
+| lua54z | <nobr>el9</nobr> | <nobr>lua-cjson, json.lua, Lua-cURLv3, luafilesystem, </nobr><br/><nobr>luaposix, print_r.lua, luasnmp</nobr> |
 <br/>
 
 
