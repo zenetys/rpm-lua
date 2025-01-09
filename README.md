@@ -1,6 +1,6 @@
 | Package&nbsp;name | Supported&nbsp;targets | Includes |
 | :--- | :--- | :--- |
-| lua54z | <nobr>el8, el9</nobr> | <nobr>lua-cjson, json.lua, Lua-cURLv3, luafilesystem, </nobr><br/><nobr>luasocket, luaposix, luaossl, print_r.lua, luasnmp</nobr> |
+| lua54z | <nobr>el9</nobr> | <nobr>lua-cjson, json.lua, Lua-cURLv3, luafilesystem, </nobr><br/><nobr>luasocket, luaposix, luaossl, print_r.lua, luasnmp</nobr> |
 <br/>
 
 
@@ -10,7 +10,6 @@ The package can be built easily using the script rpmbuild-docker provided in thi
 
 ```
 ## run from this git base tree
-$ ./rpmbuild-docker -d el8
 $ ./rpmbuild-docker -d el9
 ```
 

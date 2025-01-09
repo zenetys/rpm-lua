@@ -1,3 +1,5 @@
+# Supported targets: el9
+
 %global lua_major_version 5.4
 %global lua_minor_version 7
 
@@ -69,9 +71,7 @@ BuildRequires: libcurl-devel
 BuildRequires: ncurses-devel
 BuildRequires: net-snmp-devel
 BuildRequires: perl-Data-Dumper
-%if 0%{?rhel} >= 9
 BuildRequires: perl-FindBin
-%endif
 BuildRequires: perl-IPC-Cmd
 BuildRequires: readline-devel
 
@@ -144,7 +144,7 @@ lua_inc="$PWD/src"
 [[ -e $lua_inc/lua.h ]] || exit 1
 
 # Some modules are built using luke, which is a lua script, but the
-# standard lua binary of the distro may not be present (eg: el8).
+# standard lua binary of the distro may not be present.
 # We could add a BuildRequire on the distro lua, but since we've just
 # built it, let's use this one.
 export PATH="$PWD/src:$PATH"
