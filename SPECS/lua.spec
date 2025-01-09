@@ -14,9 +14,6 @@
     LUA_CMOD=/opt/%{name}/lib/lua \\\
     LUA_LMOD=/opt/%{name}/share/lua
 
-%define lua_filesystem_version 1_8_0
-%define lua_filesystem_xprefix luafilesystem-%{lua_filesystem_version}
-
 # luasnmp version 1.0.8
 # luasnmp does not provide release tarballs not version tags
 %define lua_snmp_version a369ad9a1271d9c6327d0c3548b08d63c250ab74
@@ -33,7 +30,6 @@ URL: http://www.lua.org/
 Source0: https://www.lua.org/ftp/lua-%{version}.tar.gz
 Source1000: https://github.com/mpx/lua-cjson/archive/refs/tags/%{lua_cjson_version}.tar.gz#/%{lua_cjson_xprefix}.tar.gz
 Source1100: https://github.com/Lua-cURL/Lua-cURLv3/archive/refs/tags/v%{lua_curl_version}.tar.gz#/%{lua_curl_xprefix}.tar.gz
-Source1200: https://github.com/keplerproject/luafilesystem/archive/refs/tags/v%{lua_filesystem_version}.tar.gz#/%{lua_filesystem_xprefix}.tar.gz
 Source1600: http://www.arpalert.org/src/lua/print_r.lua
 Source1700: https://github.com/hleuwer/luasnmp/archive/%{lua_snmp_version}.tar.gz#/%{lua_snmp_xprefix}.tar.gz
 
@@ -54,7 +50,6 @@ installs its files in /opt/%{name} and provides the following Lua
 modules:
 - lua-cjson (https://github.com/mpx/lua-cjson)
 - Lua-cURLv3 (https://github.com/Lua-cURL/Lua-cURLv3)
-- luafilesystem (https://github.com/keplerproject/luafilesystem)
 - print_r.lua (http://www.arpalert.org/haproxy-scripts.html)
 - luasnmp (https://github.com/hleuwer/luasnmp)
 
@@ -80,9 +75,6 @@ cd ..
 
 # lua-curl
 %setup -n lua-%{version} -T -D -a 1100
-
-# luafilesystem
-%setup -n lua-%{version} -T -D -a 1200
 
 # luasnmp
 %setup -n lua-%{version} -T -D -a 1700
@@ -113,11 +105,6 @@ cd %{lua_curl_xprefix}
 make %{?_smp_mflags} %{lua_curl_makeopts}
 cd ..
 
-# luafilesystem
-cd %{lua_filesystem_xprefix}
-make %{?_smp_mflags} LUA_INC='-I../src -g'
-cd ..
-
 # luasnmp
 cd %{lua_snmp_xprefix}
 make %{?_smp_mflags} LUAINC="$lua_inc" LOCAL_CFLAGS='-g'
@@ -143,13 +130,6 @@ cd ..
 # lua-curl
 cd %{lua_curl_xprefix}
 make install DESTDIR=%{buildroot} %{lua_curl_makeopts}
-cd ..
-
-# luafilesystem
-cd %{lua_filesystem_xprefix}
-make install \
-    DESTDIR=%{buildroot} \
-    LUA_LIBDIR=/opt/%{name}/lib/lua
 cd ..
 
 # print_r
