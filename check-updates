@@ -85,6 +85,8 @@ function check-updates() {
     pattern=".*\\<(${pattern:1})"
   elif [[ ${pattern:0:1} == "=" ]]; then
     pattern=".*/(${pattern:1})"
+  elif [[ ${pattern:0:1} == "@" ]]; then
+    pattern="(${pattern:1})"
   else
     pattern=".*/($pattern\\.$SUFFIX)"
   fi
