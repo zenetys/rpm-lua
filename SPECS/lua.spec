@@ -14,9 +14,7 @@
     LUA_CMOD=/opt/%{name}/lib/lua \\\
     LUA_LMOD=/opt/%{name}/share/lua
 
-# luasnmp version 1.0.8
-# luasnmp does not provide release tarballs not version tags
-%define lua_snmp_version a369ad9a1271d9c6327d0c3548b08d63c250ab74
+%define lua_snmp_version 1.1.1-1
 %define lua_snmp_xprefix luasnmp-%{lua_snmp_version}
 
 Name: lua54z
@@ -36,7 +34,6 @@ Source1700: https://github.com/hleuwer/luasnmp/archive/%{lua_snmp_version}.tar.g
 Patch0: lua-path.patch
 Patch1000: lua-cjson-integer-support.patch
 Patch1001: lua-cjson-local-cflags.patch
-Patch1700: luasnmp-no-des.patch
 
 BuildRequires: libcurl-devel
 BuildRequires: ncurses-devel
@@ -79,7 +76,6 @@ cd ..
 # luasnmp
 %setup -n lua-%{version} -T -D -a 1700
 cd %{lua_snmp_xprefix}
-%patch1700 -p1
 sed -i -re 's,^(DEF =),\1 $(LOCAL_CFLAGS),' config
 cd ..
 
