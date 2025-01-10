@@ -94,3 +94,7 @@ function print_r(p, col, wr)
 	end
 	wr("\n")
 end
+
+function eprint_r(p, col, wr)
+    print_r(p, col, function(msg) io.stderr:write(msg) end)
+end
