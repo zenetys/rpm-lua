@@ -1,4 +1,3 @@
-lua-5.4 5.4.7 lynx http://www.lua.org/ftp/ lua-(5.4.[0-9.]+)
 lua-cjson 2.1.0 json https://api.github.com/repos/mpx/lua-cjson/tags =([0-9.]+)
 Lua-cURLv3 0.3.13 json https://api.github.com/repos/Lua-cURL/Lua-cURLv3/tags =v([0-9.]+)
 luasnmp 1.1.1-1 json:map(.name)[]:.+ https://api.github.com/repos/hleuwer/luasnmp/branches @([0-9]+(\.[0-9]+)*(-[0-9]+)?)

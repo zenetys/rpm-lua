@@ -1,0 +1,20 @@
+--- a/config	2024-12-13 12:58:32.000000000 +0100
++++ b/config	2025-01-10 03:50:59.664006901 +0100
+@@ -89,7 +89,7 @@
+ LUASNMP_SO=snmp.$(EXT).$(VERSION)
+ 
+ # Compiler and Linker
+-DEF = -DUSE_SNMPTRAPD $(DEFCOMPAT) -DVERSION='"$(VERSION)"' -DSYSTEM='"$(SYSTEM)"' $(PLATFORM)
++DEF = -DUSE_SNMPTRAPD $(DEFCOMPAT) $(LOCAL_CFLAGS) -DVERSION='"$(VERSION)"' -DSYSTEM='"$(SYSTEM)"' $(PLATFORM)
+ NETSNMP_DEF =
+ CC = gcc
+ ifeq ($(DEBUG), 1)
+@@ -102,7 +102,7 @@
+ ifeq (Darwin, $(SYSTEM))
+   LDFLAGS= $(OPT) -dynamiclib -undefined dynamic_lookup -L$(LUALIB) -L$(LIBDIR)
+ else
+-  LDFLAGS = $(shell $(NETSNMP_CONFIG) --ldflags) -O -shared -fPIC
++  LDFLAGS = $(shell $(NETSNMP_CONFIG) --ldflags) -O -shared -fPIC $(LOCAL_LDFLAGS)
+ endif
+ #LIBS += $(shell net-snmp-config --libs) -lcrypto
+ LIBS += $(shell $(NETSNMP_CONFIG) --libs) -lcrypto
