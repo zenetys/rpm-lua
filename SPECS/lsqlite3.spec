@@ -13,7 +13,7 @@ Summary: Lua binding to the SQLite3 database library
 License: MIT
 URL: http://lua.sqlite.org
 
-Source0: http://lua.sqlite.org/index.cgi/tarball/lsqlite3-%{lua_lsqlite3_version}.tar.gz?uuid=v%{lua_lsqlite3_version}#/%{lua_lsqlite3_xprefix}.tar.gz
+Source0: http://lua.sqlite.org/home/tarball/%{lua_lsqlite3_xprefix}.tar.gz?uuid=v%{lua_lsqlite3_version}#/%{lua_lsqlite3_xprefix}.tar.gz
 
 BuildRequires: gcc
 BuildRequires: lua-devel
