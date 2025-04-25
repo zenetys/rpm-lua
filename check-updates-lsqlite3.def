@@ -1,0 +1,1 @@
+lsqlite3 0.9.6 lynx:p http://lua.sqlite.org/index.cgi/home <Version\s+([0-9.]+)(\s.*)?
