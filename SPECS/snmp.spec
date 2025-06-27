@@ -10,7 +10,7 @@
 
 Name: lua%{luazver}z-snmp
 Version: %{lua_snmp_rpm_version}
-Release: %{lua_snmp_rpm_release}.1%{?dist}.zenetys
+Release: %{lua_snmp_rpm_release}.2%{?dist}.zenetys
 Summary: Lua binding to net-snmp library
 License: MIT
 URL: https://github.com/hleuwer/luasnmp
@@ -18,6 +18,7 @@ URL: https://github.com/hleuwer/luasnmp
 Source0: https://github.com/hleuwer/luasnmp/archive/%{lua_snmp_version}.tar.gz#/%{lua_snmp_xprefix}.tar.gz
 
 Patch100: luasnmp-local-flags.patch
+Patch101: luasnmp-env-home.patch
 
 BuildRequires: gcc
 BuildRequires: lua-devel
@@ -31,6 +32,7 @@ LuaSNMP is a binding to the netsnmp library.
 %prep
 %setup -n %{lua_snmp_xprefix}
 %patch100 -p1
+%patch101 -p1
 
 %build
 %make_build \

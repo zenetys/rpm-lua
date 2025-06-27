@@ -1,0 +1,17 @@
+diff --git a/snmp.lua b/snmp.lua
+index 6c9fcf0..75c5827 100644
+--- a/snmp.lua
++++ b/snmp.lua
+@@ -59,8 +59,11 @@ local function configfiles()
+     "/etc/snmp/",
+     "/usr/lib/snmp/",
+     "/usr/share/snmp/",
+-    os.getenv("HOME").."/.snmp/"
+   }
++  local home = os.getenv("HOME")
++  if home then
++    table.insert(dirlist, home.."/.snmp/")
++  end
+   local filelist = {
+     "snmp.conf",
+     "snmp.local.conf",
