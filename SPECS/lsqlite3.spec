@@ -3,7 +3,7 @@
 %{!?lua_version:%global lua_version %(lua -e 'print(string.sub(_VERSION, 5))' || echo 0)}
 %global luazver %(x=%{lua_version}; echo ${x/.})
 
-%define lua_lsqlite3_version 0.9.6
+%define lua_lsqlite3_version 0.9.7
 %define lua_lsqlite3_xprefix lsqlite3-%{lua_lsqlite3_version}
 
 Name: lua%{luazver}z-lsqlite3
