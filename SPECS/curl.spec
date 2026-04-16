@@ -1,5 +1,7 @@
 # Supported targets: el9, el10
 
+%global source_date_epoch_from_changelog 0
+
 %{!?lua_version:%global lua_version %(lua -e 'print(string.sub(_VERSION, 5))' || echo 0)}
 %global luazver %(x=%{lua_version}; echo ${x/.})
 
