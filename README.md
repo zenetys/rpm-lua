@@ -16,7 +16,7 @@ from internet if not already downloaded.
 
 ```
 ## run from this git base tree
-for i in SPECS/*.spec; do; ./rpmbuild-docker -d el9 "$i"; done
+for i in SPECS/*.spec; do ./rpmbuild-docker -d el9 "$i"; done
 ```
 
 ## Prebuilt packages:
