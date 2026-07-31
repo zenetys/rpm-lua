@@ -5,7 +5,7 @@
 %{!?lua_version:%global lua_version %(lua -e 'print(string.sub(_VERSION, 5))' || echo 0)}
 %global luazver %(x=%{lua_version}; echo ${x/.})
 
-%define lua_tz_version 1.0.0
+%define lua_tz_version 1.1.0
 %define lua_tz_xprefix lua-tz-%{lua_tz_version}
 
 Name: lua%{luazver}z-tz
